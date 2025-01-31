@@ -1,9 +1,6 @@
 function knightMoves(coord1, coord2) {
     const shortPaths = getPaths(coord1, coord2);
     console.log(`=> You made it in ${shortPaths[0].length} moves! Here's your path:`);
-    shortPaths[0].forEach(element => {
-        console.log(element);
-    });
 }
 
 function getPaths(coord, end, path = [], paths = []) {
@@ -14,27 +11,29 @@ function getPaths(coord, end, path = [], paths = []) {
     if (JSON.stringify(coord) == JSON.stringify(end)) {
         if (paths.length === 0 || paths[0].length === path.length) {
             paths.push(path);
+            console.log(paths);
+            return paths;
         } else if (path.length < paths[0].length) {
             paths = [];
+            console.log(2, paths);
             paths.push(path);
         }
-        return paths;
     }
     
     const nextMoves = getMoves(coord);
     let newShorts = [];
     for (let i = 0; i < nextMoves.length; i++) {
         const newPaths = getPaths(nextMoves[i], end, path, paths);
-        if (!newPaths || newPaths.length < 1) continue;
-        if (newShorts.length < 1 || newPaths[0].length < newShorts[0].length) {
-            newShorts = newPaths;
-        } else if (newShorts[0].length === newPaths[0].length) {
-            newShorts = newShorts.concat(newPaths);
-        } else {
-
+        if (newPaths && newPaths.length > 0 && newPaths[0].length > 0) {
+            if (newShorts.length < 1 || newShorts[0].length < 1 || newShorts[0].length > newPaths[0].length) {
+                newShorts = newPaths;
+            }
         }
     }
-    return newShorts;
+    if (newShorts.length > 0 && newShorts[0].length > 0) {
+        if (paths.length < 1 || paths[0].length < 1 || paths[0].length > newShorts[0].length) return newShorts;
+    }
+    return paths;
 }
 
 function arrayIncludesArray(arr1, arr2) {
@@ -70,4 +69,4 @@ function getMoves(arr) {
     return nextMoves;
 }
 
-knightMoves([3,3],[4,3])
+knightMoves([0,0],[1,2])
