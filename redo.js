@@ -57,16 +57,16 @@ function getMoves(arr) {
                 nextMoves.push([possX, possY1]);
             }
             const possY2 = arr[1] - 2;
-            if (possY2 > 0 && possY2 < 8) {
+            if (possY2 >= 0 && possY2 < 8) {
                 nextMoves.push([possX, possY2]);
             }
         } else {
             const possY1 = arr[1] + 1;
-            if (possY1 > 0 && possY1 < 8) {
+            if (possY1 >= 0 && possY1 < 8) {
                 nextMoves.push([possX, possY1]);
             }
             const possY2 = arr[1] - 1;
-            if (possY2 > 0 && possY2 < 8) {
+            if (possY2 >= 0 && possY2 < 8) {
                 nextMoves.push([possX, possY2]);
             }
         }
@@ -74,4 +74,4 @@ function getMoves(arr) {
     return nextMoves;
 }
 
-knightMoves([0,0],[7,7])
+knightMoves([7,7],[0,0])
