@@ -1,39 +1,44 @@
-function knightMoves(coord1, coord2) {
-    const shortPaths = getPaths(coord1, coord2);
-    console.log(`=> You made it in ${shortPaths[0].length} moves! Here's your path:`);
-}
-
-function getPaths(coord, end, path = [], paths = []) {
-    if (arrayIncludesArray(path, coord)) {
-        return null;
-    };
-    path.push(coord);
-    if (JSON.stringify(coord) == JSON.stringify(end)) {
-        if (paths.length === 0 || paths[0].length === path.length) {
-            paths.push(path);
-            console.log(paths);
-            return paths;
-        } else if (path.length < paths[0].length) {
-            paths = [];
-            console.log(2, paths);
-            paths.push(path);
-        }
+function knightMoves(start, end) {
+    const shortestPath = getPath(start, end);
+    console.log(`=> You made it in ${shortestPath.length} moves! Here's your path:`);
+    for (let i = 0; i < shortestPath.length; i++) {
+        console.log(shortestPath[i]);
     }
+}
+class pathTracker {
+    constructor(coord, path) {
+        this.coord = coord;
+        this.path = path;
+    }
+}
+function getPath(start, end) {
+    // Create q
+    const q = [];
     
-    const nextMoves = getMoves(coord);
-    let newShorts = [];
-    for (let i = 0; i < nextMoves.length; i++) {
-        const newPaths = getPaths(nextMoves[i], end, path, paths);
-        if (newPaths && newPaths.length > 0 && newPaths[0].length > 0) {
-            if (newShorts.length < 1 || newShorts[0].length < 1 || newShorts[0].length > newPaths[0].length) {
-                newShorts = newPaths;
+
+    // Create tracker instance to track coord with path
+    const firstTracker = new pathTracker(start, [start]);
+    q.push(firstTracker);
+
+    // While the queue isn't empty
+    while(q[0]) {
+        // Shift the queue
+        const currentTracker = q.shift();
+        if (JSON.stringify(currentTracker.coord) === JSON.stringify(end)) {
+            
+            return currentTracker.path;
+        }
+
+        // Get next moves of tracker at front of queue
+        const nextMoves = getMoves(currentTracker.coord); 
+        for (let i = 0; i < nextMoves.length; i++) {
+            if (!arrayIncludesArray(currentTracker.path, nextMoves[i])) {
+                const newTracker = new pathTracker(nextMoves[i], [...currentTracker.path]);
+                newTracker.path.push(nextMoves[i]);
+                q.push(newTracker);
             }
         }
     }
-    if (newShorts.length > 0 && newShorts[0].length > 0) {
-        if (paths.length < 1 || paths[0].length < 1 || paths[0].length > newShorts[0].length) return newShorts;
-    }
-    return paths;
 }
 
 function arrayIncludesArray(arr1, arr2) {
@@ -52,16 +57,16 @@ function getMoves(arr) {
                 nextMoves.push([possX, possY1]);
             }
             const possY2 = arr[1] - 2;
-            if (possY2 > 0 && possY2 < 8) {
+            if (possY2 >= 0 && possY2 < 8) {
                 nextMoves.push([possX, possY2]);
             }
         } else {
             const possY1 = arr[1] + 1;
-            if (possY1 > 0 && possY1 < 8) {
+            if (possY1 >= 0 && possY1 < 8) {
                 nextMoves.push([possX, possY1]);
             }
             const possY2 = arr[1] - 1;
-            if (possY2 > 0 && possY2 < 8) {
+            if (possY2 >= 0 && possY2 < 8) {
                 nextMoves.push([possX, possY2]);
             }
         }
@@ -69,4 +74,4 @@ function getMoves(arr) {
     return nextMoves;
 }
 
-knightMoves([0,0],[1,2])
+knightMoves([7,7],[0,0])
